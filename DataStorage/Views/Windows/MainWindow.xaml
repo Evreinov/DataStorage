@@ -6,6 +6,9 @@
         xmlns:vm ="clr-namespace:DataStorage.ViewModels"
         xmlns:l="clr-namespace:DataStorage"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:models="clr-namespace:DataStorage.ViewModels.Models"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:behaviors="clr-namespace:DataStorage.Infrastructure.Behaviors"
         Height="600" Width="1080" WindowStartupLocation="CenterScreen" Foreground="White"
         MinHeight="600" MinWidth="800">
     <Window.DataContext>
@@ -71,7 +74,7 @@
         </Grid>
         <Grid x:Name="GridMenu" Width="60" HorizontalAlignment="Left" Background="#1B3861">
             <StackPanel>
-                <Grid Height="150" Background="White">
+                <Grid Height="60" Background="White">
                     <Button x:Name="ButtonCloseMenu"  Width="60" Height="60" Background="{x:Null}" BorderBrush="{x:Null}" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Collapsed">
                         <materialDesign:PackIcon Foreground="#1B3861" Kind="ArrowLeft" Width="25" Height="25"/>
                     </Button>
@@ -116,27 +119,86 @@
         <Grid x:Name="GridTreeView"  Margin="60 60 0 0" Background="White" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition MinWidth="60" MaxWidth="600"/>
+                <ColumnDefinition MinWidth="60" MaxWidth="600"/> 
             </Grid.ColumnDefinitions>
-            <TreeView Grid.Column="0">
-                <TreeViewItem Header="Элемент 1">
-                    <TreeViewItem Header="Подэлемент 1"/>
-                    <TreeViewItem Header="Подэлемент 2"/>
-                    <TreeViewItem Header="Подэлемент 3"/>
-                    <TreeViewItem Header="Подэлемент 4"/>
-                    <TreeViewItem Header="Подэлемент 5"/>
-                </TreeViewItem>
-                <TreeViewItem Header="Элемент 2"/>
-                <TreeViewItem Header="Элемент 3">
-                    <TreeViewItem Header="Подэлемент 1"/>
-                    <TreeViewItem Header="Подэлемент 2"/>
-                    <TreeViewItem Header="Подэлемент 3"/>
-                </TreeViewItem>
+            <TreeView Grid.Column="0" ItemsSource="{Binding SelectedStorage.Content}">
+                <b:Interaction.Behaviors>
+                    <behaviors:TreeViewSelectedItemBehavior SelectedItem="{Binding SelectedItem}"/>
+                </b:Interaction.Behaviors>
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type models:FolderViewModel}" ItemsSource="{Binding Content }">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Folder" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Name}" Margin="3 0 0 0"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <DataTemplate DataType="{x:Type models:FileViewModel}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="File" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Name}" Margin="3 0 0 0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </TreeView.Resources>
             </TreeView>
-            <GridSplitter Grid.Column="0" VerticalAlignment="Stretch" Width="3"/>
-            <StackPanel Grid.Column="1" Background="LightGray">
-
-            </StackPanel>
+            <GridSplitter Grid.Column="0" VerticalAlignment="Stretch" Width="5"/>
+            <Grid Grid.Column="1" Background="#1B3861">
+                <ContentPresenter Content="{Binding SelectedItem}">
+                    <ContentPresenter.Resources>
+                        <DataTemplate DataType="{x:Type models:FolderViewModel}">
+                            <StackPanel >
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Уникальный идентификатор"/>
+                                    <TextBox Text="{Binding Id}" IsReadOnly="True"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Наименование папки"/>
+                                    <TextBox Text="{Binding Name}" IsReadOnly="True"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Уникальный идентификатор пользователя владельца папки"/>
+                                    <TextBox Text="{Binding AuthorId}" IsReadOnly="True"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Наименование пользователя владельца папки"/>
+                                    <TextBox Text="{Binding AuthorName}" IsReadOnly="True"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Дата создания"/>
+                                    <TextBox Text="{Binding Created}" IsReadOnly="True"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Количество файлов, размещенных непосредственно в папке"/>
+                                    <TextBox Text="{Binding FilesCountInFolder}" IsReadOnly="True"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Количество файлов, размещенных в папке и во всех дочерних папках папки"/>
+                                    <TextBox Text="{Binding FilesCountInTreeFolders}" IsReadOnly="True"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Размер файлов (в байтах), размещённых непосредственно в папке"/>
+                                    <TextBox Text="{Binding FilesSizeInFolder}" IsReadOnly="True"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Размер файлов (в байтах), размещённых в папке и во всех дочерних папках папки"/>
+                                    <TextBox Text="{Binding FilesSizeInTreeFolders}" IsReadOnly="True"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate DataType="{x:Type models:FileViewModel}">
+                            <StackPanel >
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Уникальный идентификатор"/>
+                                    <TextBox Text="{Binding Id}" IsReadOnly="True"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Vertical" Margin="10 5" >
+                                    <TextBlock Text="Наименование файла"/>
+                                    <TextBox Text="{Binding Name}" IsReadOnly="True"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ContentPresenter.Resources>
+                </ContentPresenter>
+            </Grid>
         </Grid>
         <StatusBar Height="25" VerticalAlignment="Bottom" Background="#37B12E" Foreground="WhiteSmoke" Padding="10 0">
             <TextBlock Text="Ready"/>

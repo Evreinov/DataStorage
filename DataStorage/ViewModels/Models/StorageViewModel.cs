@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using DataStorage.Models;
 using DataStorage.ViewModels.Base;
 
@@ -114,6 +115,20 @@ internal class StorageViewModel : ViewModel
     {
         get => _RootFolderId;
         set => Set(ref _RootFolderId, value);
+    }
+
+    #endregion
+
+    #region Content : ObservalCollection<object> - Содержимое хранилища
+
+    /// <summary>Содержимое хранилища</summary>
+    private ObservableCollection<object> _Content;
+
+    /// <summary>Содержимое хранилища</summary>
+    public ObservableCollection<object> Content
+    {
+        get => _Content;
+        set => Set(ref _Content, value);
     }
 
     #endregion

@@ -1,5 +1,6 @@
 ﻿using DataStorage.ViewModels.Base;
 using System;
+using System.Collections.ObjectModel;
 
 namespace DataStorage.ViewModels.Models;
 
@@ -127,6 +128,20 @@ internal class FolderViewModel : ViewModel
     {
         get => _FilesSizeInTreeFolders;
         set => Set(ref _FilesSizeInTreeFolders, value);
+    }
+
+    #endregion
+
+    #region Content : ObservalCollection<object> - Содержимое папки
+
+    /// <summary>Содержимое хранилища</summary>
+    private ObservableCollection<object> _Content;
+
+    /// <summary>Содержимое хранилища</summary>
+    public ObservableCollection<object> Content
+    {
+        get => _Content;
+        set => Set(ref _Content, value);
     }
 
     #endregion
